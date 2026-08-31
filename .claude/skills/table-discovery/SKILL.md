@@ -21,6 +21,11 @@ evidence, then question the user only for what's still genuinely unclear.
 - Batch related questions together instead of trickling them out one at a time.
 - Lead with a proposed interpretation backed by evidence, and let the user
   confirm or correct it — that's less work for them than an open question.
+- This skill covers the input side (what the tables actually are). If the
+  conversation is really about the business ask driving the work — what
+  the output should be, who it's for, what "correct" means — that's the
+  `bgdlot` skill; use both together when a request arrives already paired
+  with source tables.
 
 Good:
 > For `daily_mbnt`, I need to confirm 3 things:

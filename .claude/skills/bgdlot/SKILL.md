@@ -17,6 +17,8 @@ mechanically for every request:
 - **B — Business**: objective, users, KPIs, what "correct" behavior looks like
 - **G — Grain**: what one row represents, the keys, the level of aggregation
 - **D — Data**: sources, which one is the source of truth, fields, quality, history
+  (for any source table not already understood, use the `table-discovery`
+  skill to establish its grain, keys, and join cardinality before relying on it)
 - **L — Logic & Links**: formulas, filters, date logic, joins, cardinality
 - **O — Operation**: refresh cadence, scale, reruns, incremental vs. full load
 - **T — Tests**: how correctness will actually be proven
