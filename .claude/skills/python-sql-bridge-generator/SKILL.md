@@ -20,10 +20,11 @@ Python → connects to PostgreSQL → PostgreSQL executes SQL → Python prints 
 Assume PostgreSQL credentials exist in `.env`:
 
 ```
-host=localhost
-database=db
-user=usr
-password=pwd
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=db
+DB_USER=usr
+DB_PASSWORD=pwd
 ```
 
 Use: `os`, `python-dotenv`, `SQLAlchemy`, `psycopg`.
@@ -36,13 +37,14 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 
 load_dotenv()
-host = os.getenv("host")
-database = os.getenv("database")
-user = os.getenv("user")
-password = os.getenv("password")
+host = os.getenv("DB_HOST")
+port = os.getenv("DB_PORT")
+database = os.getenv("DB_NAME")
+user = os.getenv("DB_USER")
+password = os.getenv("DB_PASSWORD")
 
 engine = create_engine(
-    f"postgresql+psycopg://{user}:{password}@{host}/{database}"
+    f"postgresql+psycopg://{user}:{password}@{host}:{port}/{database}"
 )
 
 sql = """
