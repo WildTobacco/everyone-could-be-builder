@@ -1,6 +1,6 @@
 ---
 name: table-discovery
-description: Builds and maintains an accurate, evidence-based understanding of every table in a data project before writing SQL, Python, ETL, modeling, or BI logic against it — grain, keys, time semantics, measures, business rules, relationships, and data quality. Use this whenever a table, schema, or dataset is introduced (new table shown, "learn this table", a CREATE TABLE/sample rows pasted in, a request to query or join tables not yet understood), before generating a query or transformation over data whose grain or join cardinality isn't already confirmed, or when reviewing/debugging a query that may have a row-multiplication, fan-out, or duplicate-key bug. Keeps a compact registry across the conversation ("show registry", "what do you know about X", "validate X", "ready?") so table semantics get established once and reused, not re-derived or silently guessed every time.
+description: Builds and maintains an accurate, evidence-based understanding of every table in a data project before writing SQL, Python, ETL, modeling, or BI logic against it — grain, keys, time semantics, measures, business rules, relationships, and data quality. Use this whenever a table, schema, or dataset is introduced (new table shown, "learn this table", a CREATE TABLE/sample rows pasted in, a request to query or join tables not yet understood), before generating a query or transformation over data whose grain or join cardinality isn't already confirmed, or when reviewing/debugging a query that may have a row-multiplication, fan-out, or duplicate-key bug. Keeps a compact registry across the conversation ("show registry", "what do you know about X", "validate X", "ready?") so table semantics get established once and reused, not re-derived or silently guessed every time. Once a table is fully understood (CLEAR), can also generate realistic mock data for it from the registry entry ("mock X") — useful for testing without touching the real database.
 ---
 
 # Table Discovery & Registry
@@ -157,6 +157,43 @@ on this one, like `bgdlot`) that it's safe to build on:
 If it can't clear yet, say that instead and name only the blocking unknowns
 — not a restatement of everything still unverified.
 
+## Mock data
+
+Once a table is CLEAR, its registry entry is enough to generate a small,
+realistic mock dataset for it — useful for testing a query or transform
+without touching the real database. Offer this, don't force it: a table
+someone's actively discovering usually gets used for real work next, not
+synthetic testing, so this is a follow-up, not an automatic next step after
+every CLEAR.
+
+When generating mock data, build it directly from what the registry
+recorded — don't re-derive or guess table shape from scratch:
+
+- **Grain** — generate exactly that many rows for whatever combination of
+  keys/dimensions you choose to include (e.g. a few dates × a few
+  customers), not an arbitrary row count.
+- **Keys** — respect the uniqueness constraint the registry marked KNOWN or
+  INFERRED. If it's UNVERIFIED, either mock it as unique (the common case)
+  or ask whether the mock should also exercise the duplicate-key case —
+  don't default to duplicates without asking, since that changes what a
+  downstream query is being tested against.
+- **Measures/dimensions** — plausible values matching the recorded units,
+  scale, and categories (a `tỷ đồng` measure shouldn't get values that look
+  like raw đồng; a categorical dimension shouldn't get values outside its
+  known set).
+- **Business rules** — reflect known exclusions or special cases in the
+  mock (e.g. include at least one NULL in a nullable field the registry
+  flagged, or one row hitting a documented edge case) so the mock is
+  actually useful for testing that rule, not just filler.
+- **Quirks** — if the registry recorded a known data-quality issue (a
+  duplicate, a NULL rate, a gap), reproduce a small instance of it in the
+  mock only if the user wants to test against that quirk specifically —
+  otherwise keep the mock clean by default.
+
+Don't invent business rules or quirks that were never confirmed just to
+make the mock "more realistic" — an UNVERIFIED or UNKNOWN item stays absent
+from the mock's logic, not silently assumed one way.
+
 ## Commands
 
 - **"Learn this table"** — start or resume discovery on it, update the registry.
@@ -164,6 +201,8 @@ If it can't clear yet, say that instead and name only the blocking unknowns
 - **"What do you know about X?"** — show X's current entry and what's still unresolved.
 - **"Validate X"** — generate diagnostic SQL for X's unverified assumptions.
 - **"Forget X"** — remove X from the working registry.
+- **"Mock X"** — generate mock data for X from its registry entry (X must
+  be CLEAR first; if it isn't, say what's blocking instead of guessing).
 - **"Ready?"** — report whether there's enough to safely start the requested
   work, listing only what's actually blocking (not every open UNVERIFIED).
 
