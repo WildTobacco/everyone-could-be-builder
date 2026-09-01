@@ -53,18 +53,23 @@ LIMIT 5;
 
 with engine.connect() as connection:
     result = connection.execute(text(sql))
+    columns = result.keys()
     rows = result.fetchall()
 
 for row in rows:
-    print(row)
+    print(dict(zip(columns, row)))
 ```
+
+The output loop is deliberately generic — it zips each row against its
+column names instead of unpacking a fixed number of values, so it works
+whether the query returns 1 column or 20. Never hardcode a fixed-arity
+unpack like `for schema, table in rows` in the generated script; the whole
+point of this bridge is that it works for any SQL the user drops in,
+without Python needing to know the query's shape ahead of time.
 
 Swap `table` in the `sql` string for whatever the user names, and adjust
 the query itself (columns, filters, limit) if they specify one — but never
-add logic beyond what they asked for. If the user gives an exact query to
-use verbatim, use it as given even if the print loop would need adjusting
-to match its actual column shape — flag the mismatch rather than silently
-"fixing" it.
+add logic beyond what they asked for.
 
 ## Invocation and output mode
 
