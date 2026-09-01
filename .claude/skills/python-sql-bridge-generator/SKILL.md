@@ -35,17 +35,27 @@ Use: `os`, `python-dotenv`, `SQLAlchemy`, `psycopg`.
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
+from sqlalchemy.engine import URL
 
 load_dotenv()
-host = os.getenv("DB_HOST")
-port = os.getenv("DB_PORT")
-database = os.getenv("DB_NAME")
-user = os.getenv("DB_USER")
-password = os.getenv("DB_PASSWORD")
+config = {
+    "DB_HOST": os.getenv("DB_HOST"),
+    "DB_PORT": os.getenv("DB_PORT"),
+    "DB_NAME": os.getenv("DB_NAME"),
+    "DB_USER": os.getenv("DB_USER"),
+    "DB_PASSWORD": os.getenv("DB_PASSWORD"),
+}
 
-engine = create_engine(
-    f"postgresql+psycopg://{user}:{password}@{host}:{port}/{database}"
+url = URL.create(
+    "postgresql+psycopg",
+    username=config["DB_USER"],
+    password=config["DB_PASSWORD"],
+    host=config["DB_HOST"],
+    port=int(config["DB_PORT"]),
+    database=config["DB_NAME"],
 )
+
+engine = create_engine(url)
 
 sql = """
 SELECT *
@@ -68,6 +78,14 @@ whether the query returns 1 column or 20. Never hardcode a fixed-arity
 unpack like `for schema, table in rows` in the generated script; the whole
 point of this bridge is that it works for any SQL the user drops in,
 without Python needing to know the query's shape ahead of time.
+
+The connection URL is built with `URL.create()`, not an f-string. A
+password containing `@`, `:`, or `/` breaks the naive
+`f"...://{user}:{password}@{host}..."` interpolation silently (those
+characters are URL-structural), and credentials are exactly the kind of
+value that isn't guaranteed to avoid them. `URL.create()` handles the
+escaping correctly — don't regress this back to string interpolation even
+though it's shorter.
 
 Swap `table` in the `sql` string for whatever the user names, and adjust
 the query itself (columns, filters, limit) if they specify one — but never
