@@ -151,9 +151,9 @@ category is to catch a real bug, not by how easy it is to write:
 5. **Date logic** — boundary check on inclusive/exclusive filter edges;
    does a cumulative measure actually accumulate correctly across the
    period instead of resetting or double-adding?
-6. **Business rule spot-checks** — pick one known real-world example, hand
-   -calculate the expected value, compare to the query's output. Confirm a
-   documented exclusion is actually excluded.
+6. **Business rule spot-checks** — pick one known real-world example,
+   hand-calculate the expected value, compare to the query's output.
+   Confirm a documented exclusion is actually excluded.
 7. **Rerun safety** — running the pipeline twice on the same input: does
    the output stay identical, or does it duplicate or drift?
 
