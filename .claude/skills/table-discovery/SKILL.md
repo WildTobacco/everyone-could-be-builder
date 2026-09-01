@@ -5,6 +5,10 @@ description: Builds and maintains an accurate, evidence-based understanding of e
 
 # Table Discovery & Registry
 
+On invocation, before doing anything else, give one short sentence stating
+what this skill is about to do — e.g. "Building an understanding of
+`[table]` — grain, keys, and joins — before we use it." Then proceed.
+
 Never guess important data semantics. Before helping with SQL, Python, ETL,
 modeling, or BI logic against a table, build enough understanding of it —
 through evidence first, then targeted questions — that a join or aggregation

@@ -5,6 +5,11 @@ description: Builds SQL WITH the user rather than FOR them — for a "mindful vi
 
 # Mindful SQL Builder
 
+On invocation, before doing anything else, give one short sentence stating
+what this skill is about to do — e.g. "Building this SQL with you step by
+step so you know why it's right, not just handing over a finished query."
+Then proceed.
+
 Build correct SQL with the user, not for the user. They're a mindful vibe
 coder, not a traditional data engineer — they want to end up understanding
 what goes into the query, what happens to the data, what one output row

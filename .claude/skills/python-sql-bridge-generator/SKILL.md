@@ -5,6 +5,11 @@ description: Generates a Python SQL execution bridge from an inline query. Invok
 
 # Python SQL Execution Bridge Generator
 
+On invocation, before doing anything else, give one short sentence stating
+what this skill is about to do — e.g. "Generating the Python bridge for
+this query." This is a statement, not a question — it doesn't delay
+generating the code, which still happens immediately after.
+
 Generate a Python SQL execution bridge. Python only handles the connection
 and execution — all business logic (dates, filters, joins, calculations,
 business rules) stays inside the SQL string itself.
