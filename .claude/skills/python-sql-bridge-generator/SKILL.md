@@ -1,23 +1,19 @@
 ---
 name: python-sql-bridge-generator
-description: Generates a ready-to-copy Python SQL execution bridge directly in chat, immediately, without asking questions first. Use whenever the ask is "give me the Python to run this SQL file", "how do I connect this query to Python", or similar — a small PostgreSQL-via-SQLAlchemy bridge script the user will copy, set the SQL path on, and run themselves. Not for writing the SQL (use mindful-sql-builder/table-discovery/bgdlot for that) and not for building a reusable script or module in the project — this is specifically a quick copy-paste snippet, generated on the spot even with no file path given. Never executes the code and never writes a .py file unless explicitly asked.
+description: Generates a Python SQL execution bridge from an inline query. Invoked as `/python-sql-bridge-generator [file path] [name]`, it writes `[name].py` to `[file path]` containing the bridge code — that's the primary path. Without both a file path and a name, it falls back to printing the same code directly in chat for copy-paste instead of writing a file. Use whenever the ask is "give me the Python to run this SQL", "generate a script that connects to Postgres and runs this query", or similar. Not for writing the SQL itself (use mindful-sql-builder/table-discovery/bgdlot for that) — this only wires an already-written query to a PostgreSQL connection via SQLAlchemy. Never executes the generated script.
 ---
 
 # Python SQL Execution Bridge Generator
 
-Generate a ready-to-copy Python SQL execution bridge directly in chat. The
-user copies the code, sets the SQL file path, and runs it themselves. Do
-not execute the Python and do not create a `.py` file unless explicitly
-requested.
+Generate a Python SQL execution bridge. Python only handles the connection
+and execution — all business logic (dates, filters, joins, calculations,
+business rules) stays inside the SQL string itself.
 
 ## Architecture
 
 ```
-Python → reads .sql file → connects to PostgreSQL → PostgreSQL executes SQL → Python prints results
+Python → connects to PostgreSQL → PostgreSQL executes SQL → Python prints results
 ```
-
-Python only handles execution. All business logic — dates, filters, joins,
-calculations, business rules — stays inside SQL.
 
 ## Environment
 
@@ -30,66 +26,72 @@ user=usr
 password=pwd
 ```
 
-Use: `pathlib`, `os`, `python-dotenv`, `SQLAlchemy`, `psycopg`.
+Use: `os`, `python-dotenv`, `SQLAlchemy`, `psycopg`.
 
-## Required output
-
-Immediately generate this complete Python code in chat:
+## Code template
 
 ```python
-from pathlib import Path
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 
-# 1. Load database credentials
 load_dotenv()
 host = os.getenv("host")
 database = os.getenv("database")
 user = os.getenv("user")
 password = os.getenv("password")
 
-# 2. Connect to PostgreSQL
 engine = create_engine(
     f"postgresql+psycopg://{user}:{password}@{host}/{database}"
 )
 
-# 3. Read SQL script
-sql = Path("PATH_TO_YOUR_SQL_FILE.sql").read_text(
-    encoding="utf-8"
-)
+sql = """
+SELECT *
+FROM table
+LIMIT 5;
+"""
 
-# 4. Send SQL to PostgreSQL and get results
 with engine.connect() as connection:
     result = connection.execute(text(sql))
     rows = result.fetchall()
 
-# 5. Output results
 for row in rows:
     print(row)
 ```
 
-## SQL path behavior
+Swap `table` in the `sql` string for whatever the user names, and adjust
+the query itself (columns, filters, limit) if they specify one — but never
+add logic beyond what they asked for. If the user gives an exact query to
+use verbatim, use it as given even if the print loop would need adjusting
+to match its actual column shape — flag the mismatch rather than silently
+"fixing" it.
 
-If the user provides a SQL file path, insert it automatically. If no SQL
-file path is provided, use `Path("PATH_TO_YOUR_SQL_FILE.sql")` as a
-placeholder. Do not ask for the SQL file path — generate immediately either
-way, and let the user replace the placeholder manually if needed.
+## Invocation and output mode
+
+Invoked as `/python-sql-bridge-generator [file path] [name]`:
+
+- Write the code above to `[name].py` at `[file path]`.
+- Do not execute the generated script.
+- Confirm what was written and where.
+
+Invoked without both a file path and a name (e.g. just describing what's
+needed in chat): don't ask for the missing arguments — instead, print the
+same code directly in chat as a copy-paste snippet, same as if no file
+were being created.
 
 ## Rules
 
-- Generate the complete Python runner immediately.
-- Output it directly in chat for copy-paste.
-- Do not ask questions before generating it.
-- Do not execute it.
-- Do not create a `.py` file.
-- Do not rewrite SQL into Python.
-- Do not move dates, filters, joins, calculations, or business rules into Python.
-- Do not modify the SQL.
-- Do not add parameters unless explicitly requested.
-- Do not add pandas, JSON, APIs, functions, or unnecessary abstractions.
-- Keep the runner lightweight.
+- Don't rewrite SQL logic into Python — the `sql` string is the one place
+  business logic lives.
+- Don't modify a query the user gave verbatim.
+- Don't add parameters, pandas, JSON, APIs, or other abstractions unless
+  explicitly requested.
+- Keep the bridge lightweight — a connect-execute-print script, not a
+  framework.
+- Never execute the script yourself, whether it was written to disk or
+  only printed in chat.
 
 ## Core rule
 
-Generate first. The user edits the SQL path. Python executes; SQL calculates.
+Python executes; SQL calculates. Write the file when given a path and name;
+otherwise print the snippet.
