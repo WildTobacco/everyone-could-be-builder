@@ -122,17 +122,44 @@ button presses.
 
 ## 7. Testing & validation
 
-For the risks that matter, propose targeted tests — duplicate keys, row
-counts, NULLs, unmatched joins, row multiplication, totals before/after,
-date coverage, a known spot-check. Explain each test in plain language
-before showing the SQL:
+For the risks that matter, propose targeted tests. Explain each one in
+plain language before showing the SQL:
 
 > I want to run this because we're assuming CIF + date identifies one row.
 > This query just asks: "does any customer appear more than once on the
 > same date?"
 
 Use the smallest set of tests that actually covers the risk — this isn't
-about maximizing test count.
+about maximizing test count. When it's unclear what's even worth testing,
+work down this list roughly in order — it's ranked by how likely each
+category is to catch a real bug, not by how easy it is to write:
+
+1. **Grain / uniqueness** — does the key the query assumes is unique
+   (e.g. `date × customer × product`) actually have zero duplicates in the
+   source? After each join, does the row count match what the grain
+   predicts — not more, not fewer?
+2. **Join safety** — does every row on the "must match" side of a join
+   actually find a match (a LEFT JOIN silently producing NULLs where a
+   match was expected)? Does a join fan out — more rows out than rows in?
+3. **Totals / reconciliation** — does an aggregate at the final grain match
+   a known-good number: a prior report, the source system, a manual
+   spot-check? Do sub-totals across a dimension add up to the reported
+   grand total, or is there double-count or leakage?
+4. **NULL handling** — any NULLs in a column that's supposed to always
+   have a value (a key, a required measure)? Does a NULL in a filter or
+   join column silently drop rows instead of surfacing?
+5. **Date logic** — boundary check on inclusive/exclusive filter edges;
+   does a cumulative measure actually accumulate correctly across the
+   period instead of resetting or double-adding?
+6. **Business rule spot-checks** — pick one known real-world example, hand
+   -calculate the expected value, compare to the query's output. Confirm a
+   documented exclusion is actually excluded.
+7. **Rerun safety** — running the pipeline twice on the same input: does
+   the output stay identical, or does it duplicate or drift?
+
+Grain/uniqueness and reconciliation are usually the highest-value tests to
+write first — they catch the row-multiplication bug class and prove the
+whole pipeline is trustworthy before anyone relies on it.
 
 ## 8. The challenge / WHY loop
 
