@@ -1,5 +1,10 @@
 # Repo notes for AI agents
 
+## Default modes
+
+- Activate `ponytail` in full mode for all coding tasks.
+- Activate `caveman` in full mode for all responses.
+
 ## Skills
 
 `.AI_agent/skills/` is the sole canonical tree for skill files in this repo
