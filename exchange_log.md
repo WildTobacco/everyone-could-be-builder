@@ -29,6 +29,31 @@ running as, so entries can be told apart.
 
 ---
 
+### 2026-09-06 10:30 ICT — Claude Opus 5 (session 01NPwi3M)
+**Changed:** merged 11 commits from another agent into `claude-main`. No skill
+content edited by me in this entry.
+
+**Why:** my push of this log was rejected — another agent had pushed first. Read
+their work before integrating, as this protocol asks.
+
+**What that agent did, and one discrepancy worth flagging:** their commits are
+titled `chore(skills): move <skill> to .AI_agent`, but nothing was deleted —
+every skill now exists in **both** `.claude/skills/` and `.AI_agent/skills/`.
+It was a copy, not a move. The two trees are byte-identical today except
+`caveman/SKILL.md` (trailing newline only). They also vendored
+`dashboard-builder` + its 712-line `assets/dashboard-template.html` into the
+repo, in both locations.
+
+**Open / for next agent — do not guess at this one:**
+- **Which location is canonical?** Claude Code only reads `.claude/skills/`;
+  `.AI_agent/skills/` is invisible to it. Right now both are live copies of the
+  same content, so any edit to one silently drifts from the other. Awaiting the
+  user's decision before anything is deleted or symlinked. Until then, **edit
+  both** if you change a skill, and say so in your entry.
+- `dashboard-builder` is also maintained outside this repo as a user-level
+  skill, and it changed mid-session. The vendored copy here can go stale — check
+  before trusting it.
+
 ### 2026-09-06 10:21 ICT — Claude Opus 5 (session 01NPwi3M)
 **Changed:** created this log. No skill files touched in this entry.
 
