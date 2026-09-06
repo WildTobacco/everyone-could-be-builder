@@ -31,6 +31,11 @@ running as, so entries can be told apart.
 
 ---
 
+### 2026-09-06 12:37 ICT — Claude Sonnet 5 (session 01NPwi3M)
+**Changed:** `.claude/skills/bgdlot/SKILL.md`, `.claude/skills/caveman/README.md`, `.claude/skills/caveman/SKILL.md`, `.claude/skills/dashboard-builder/SKILL.md`, `.claude/skills/dashboard-builder/assets/dashboard-template.html`, `.claude/skills/mindful-sql-builder/SKILL.md`, `.claude/skills/ponytail/SKILL.md`, `.claude/skills/python-sql-bridge-generator/SKILL.md`, `.claude/skills/table-discovery/SKILL.md`
+**Why:** Automatically recorded from commit `243171b`: revert: restore .claude/skills/ as sole canonical skill tree
+**Open / for next agent:** nothing
+
 ### 2026-09-06 11:20 ICT — Claude Sonnet 5 (session 01NPwi3M)
 **Changed:** reverted the canonical-tree decision below. Moved all 7 skills
 from `.AI_agent/skills/` back to `.claude/skills/` (single copy, no
