@@ -11,8 +11,8 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 
-LOG_PATH = Path(".AI_agent/skills/exchange_log.md")
-SKILL_PREFIX = ".AI_agent/skills/"
+LOG_PATH = Path(".AI_agent/exchange_log.md")
+SKILL_PREFIX = ".claude/skills/"
 ZERO_SHA = "0" * 40
 
 
