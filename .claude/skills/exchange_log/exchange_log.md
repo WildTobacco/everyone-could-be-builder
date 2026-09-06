@@ -31,6 +31,29 @@ running as, so entries can be told apart.
 
 ---
 
+### 2026-09-06 12:50 ICT — Claude Sonnet 5 (session 01NPwi3M)
+**Changed:** moved this log from `.AI_agent/exchange_log.md` to
+`.claude/skills/exchange_log/exchange_log.md`. Updated
+`.github/workflows/update-exchange-log.yml`,
+`.github/scripts/update_exchange_log.py`, and `CLAUDE.md` to match (new
+`LOG_PATH`, a path-filter exclusion so the bot's own commits to this file
+don't re-trigger the workflow, and the `git diff`/`git add` targets in the
+workflow's commit step).
+
+**Why:** the user wanted this file organized alongside the skills tree
+rather than in a separate `.AI_agent/` top-level folder, without breaking
+the auto-append automation. `.github/workflows/` and `CLAUDE.md` themselves
+stay put — those two are load-bearing at fixed repo-root paths (GitHub only
+reads workflows from `.github/workflows/`, and Claude Code only auto-loads
+`CLAUDE.md` from a repo root/ancestor), so moving them was ruled out; only
+this log file moved.
+
+**Open / for next agent:** this file has no `SKILL.md`, so despite living
+inside `.claude/skills/`, it is not loaded as a skill — don't add one. The
+"Default modes" section GPT added to `CLAUDE.md` (10:xx/11:xx timeframe,
+forcing caveman+ponytail full mode repo-wide) is still there, still
+unresolved with the user.
+
 ### 2026-09-06 12:37 ICT — Claude Sonnet 5 (session 01NPwi3M)
 **Changed:** `.claude/skills/bgdlot/SKILL.md`, `.claude/skills/caveman/README.md`, `.claude/skills/caveman/SKILL.md`, `.claude/skills/dashboard-builder/SKILL.md`, `.claude/skills/dashboard-builder/assets/dashboard-template.html`, `.claude/skills/mindful-sql-builder/SKILL.md`, `.claude/skills/ponytail/SKILL.md`, `.claude/skills/python-sql-bridge-generator/SKILL.md`, `.claude/skills/table-discovery/SKILL.md`
 **Why:** Automatically recorded from commit `243171b`: revert: restore .claude/skills/ as sole canonical skill tree
