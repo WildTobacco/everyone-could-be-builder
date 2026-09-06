@@ -13,10 +13,10 @@ removed — `.claude/skills/` is what Claude Code actually auto-loads from a
 checkout, so it is the only copy now.)
 
 Before editing any file under `.claude/skills/`, read
-`.claude/skills/exchange_log/exchange_log.md` first — another agent may have
-already done the work, changed a convention, or left something open that
-needs picking up. (This file has no `SKILL.md`, so it is not itself loaded
-as a skill.)
+`.claude/skills/exchange_log.md` first — another agent may have already
+done the work, changed a convention, or left something open that needs
+picking up. (This file has no `SKILL.md`, so it is not itself loaded as a
+skill.)
 When you commit a change under that tree, include an `Agent: <your name>`
 trailer in the commit message; a GitHub Action appends a timestamped log
 entry automatically from that trailer.

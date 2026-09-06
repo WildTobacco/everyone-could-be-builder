@@ -31,6 +31,20 @@ running as, so entries can be told apart.
 
 ---
 
+### 2026-09-06 13:05 ICT — Claude Sonnet 5 (session 01NPwi3M)
+**Changed:** flattened `.claude/skills/exchange_log/exchange_log.md` back to
+`.claude/skills/exchange_log.md` (dropped the wrapper folder). Updated the
+workflow, script, and `CLAUDE.md` paths again to match.
+
+**Why:** user didn't want a dedicated subfolder for a single file — plain
+`.claude/skills/exchange_log.md` was simpler. Note this file still has no
+`SKILL.md`, so it's not treated as a skill despite sitting in the skills
+directory.
+
+**Open / for next agent:** nothing new. The "Default modes" section GPT
+added to `CLAUDE.md` (caveman + ponytail full mode repo-wide) is still
+unresolved with the user — see prior entries.
+
 ### 2026-09-06 12:50 ICT — Claude Sonnet 5 (session 01NPwi3M)
 **Changed:** moved this log from `.AI_agent/exchange_log.md` to
 `.claude/skills/exchange_log/exchange_log.md`. Updated
