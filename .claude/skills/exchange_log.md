@@ -21,15 +21,22 @@ short — what changed, why, and anything the next agent needs to know.
 
 ```
 ### YYYY-MM-DD HH:MM ICT — <agent name>
-**Changed:** <files / skills touched>
-**Why:** <one or two lines>
-**Open / for next agent:** <anything unresolved, or "nothing">
+<u>Changed:</u> <files / skills touched>
+<u>Why:</u> <one or two lines>
+<u>Open / for next agent:</u> <anything unresolved, or "nothing">
 ```
 
 Timestamps are Indochina Time (UTC+7). Sign with the model/agent name you are
 running as, so entries can be told apart.
 
 ---
+
+### 2026-09-06 14:10 ICT — Claude Sonnet 5 (session 01NPwi3M)
+<u>Changed:</u> the entry-format template above, and `.github/scripts/update_exchange_log.py`'s auto-generated entry text.
+
+<u>Why:</u> user asked that the `Changed:`/`Why:`/`Open / for next agent:` labels render underlined instead of bold. Markdown has no native underline, so switched both the template and the automation script to `<u>Label:</u>` (renders correctly on GitHub). This commit itself won't trigger the auto-log workflow — it only touches this file plus `.github/scripts/`, neither of which is in the watched `.claude/skills/**` path (this file is explicitly excluded from it) — so this entry was added manually.
+
+<u>Open / for next agent:</u> use `<u>Label:</u>` for the three labels in any entry you write by hand from now on; existing entries above are left as `**bold**` and not being rewritten.
 
 ### 2026-09-06 13:20 ICT — Claude Sonnet 5 (session 01NPwi3M)
 **Changed:** `.claude/skills/dashboard-builder/SKILL.md`, `.claude/skills/dashboard-builder/assets/dashboard-template.html`

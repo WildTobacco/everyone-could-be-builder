@@ -63,9 +63,9 @@ def main() -> None:
     paths = ", ".join(f"`{path}`" for path in changed)
     entry = (
         f"\n### {timestamp} — {agent}\n"
-        f"**Changed:** {paths}\n"
-        f"**Why:** Automatically recorded from commit `{after[:7]}`: {subject}\n"
-        "**Open / for next agent:** nothing\n"
+        f"<u>Changed:</u> {paths}\n"
+        f"<u>Why:</u> Automatically recorded from commit `{after[:7]}`: {subject}\n"
+        "<u>Open / for next agent:</u> nothing\n"
     )
 
     log = LOG_PATH.read_text(encoding="utf-8")
