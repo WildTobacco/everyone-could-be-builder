@@ -706,6 +706,52 @@
     draw();
     return host;
   };
+
+  /**
+   * Render an overview score card (Items 1-4): one or two headline metrics with a
+   * period-over-period delta. Each metric shows, top to bottom: the value (with its
+   * unit at the same size), the metric's label, the percent change at 80% of the
+   * value's font size, and the comparison basis below that at label size.
+   * Example: renderKpiScorecard(1, { title: "Doanh số & Lợi nhuận",
+   *   metrics: [
+   *     { label: "Doanh số", value: "5.240", unit: "bn", delta: 12.0, deltaLabel: "so với cùng kỳ" },
+   *     { label: "Lợi nhuận", value: "890", unit: "bn", delta: 8.7, deltaLabel: "so với cùng kỳ" }
+   *   ] });
+   */
+  window.renderKpiScorecard = (itemNumber, config = {}) => {
+    const host = window.getDashboardItem(itemNumber);
+    if (!host) throw new Error(`Dashboard Item ${itemNumber} does not exist.`);
+    if (!host.classList.contains("kpi-card")) {
+      throw new Error(`Dashboard Item ${itemNumber} is not a score card slot.`);
+    }
+
+    const metrics = (Array.isArray(config.metrics) ? config.metrics : []).map((metric) => ({
+      label: String(metric.label ?? ""),
+      value: String(metric.value ?? ""),
+      unit: String(metric.unit ?? ""),
+      delta: Number(metric.delta) || 0,
+      deltaLabel: String(metric.deltaLabel ?? "so với cùng kỳ")
+    }));
+    if (!metrics.length) throw new Error("renderKpiScorecard requires at least one metric.");
+
+    const title = String(config.title ?? "");
+    const metricsHtml = metrics.map((metric, index) => {
+      const sign = metric.delta > 0 ? "▲" : metric.delta < 0 ? "▼" : "—";
+      const tone = metric.delta > 0 ? "var(--up)" : metric.delta < 0 ? "var(--down)" : "var(--muted-foreground)";
+      const deltaText = `${sign} ${Math.abs(metric.delta).toLocaleString("vi-VN", { maximumFractionDigits: 1 })}%`;
+      const divider = index < metrics.length - 1 ? '<div class="kpi-divider"></div>' : "";
+      return `<div class="kpi-metric">
+          <div class="kpi-big">${escapeChartText(metric.value)}${metric.unit ? ` <span>${escapeChartText(metric.unit)}</span>` : ""}</div>
+          <div class="kpi-sub">${escapeChartText(metric.label)}</div>
+          <div style="font-size:19px;font-weight:800;color:${tone};margin-top:8px;font-variant-numeric:tabular-nums">${escapeChartText(deltaText)}</div>
+          <div class="kpi-sub" style="margin-top:2px">${escapeChartText(metric.deltaLabel)}</div>
+        </div>${divider}`;
+    }).join("");
+
+    host.querySelector(".item-label")?.remove();
+    host.innerHTML = `${title ? `<h3 class="kpi-title">${escapeChartText(title)}</h3>` : ""}<div class="kpi-row-inner">${metricsHtml}</div>`;
+    return host;
+  };
 </script>
 
 </body>

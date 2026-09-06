@@ -48,8 +48,23 @@ renderTargetMetChart(6, {
 ```
 
 - Insert the call after the bundled template script or invoke it from later application code so `window.getDashboardItem` is available. Use the user's real labels and numbers; never substitute the example values unless the user explicitly requests mock data.
+- For an overview score card (Items 1–4) showing one or two headline metrics with a period-over-period change (e.g. doanh số / lợi nhuận vs. cùng kỳ), use the template's built-in `window.renderKpiScorecard` renderer. Do not invent a different card layout. Per metric it renders, top to bottom: the value with its unit at the same size, the metric's label, the percent change at 80% of the value's size (colored `var(--up)`/`var(--down)` by sign), and the comparison basis below that at label size. Example:
+
+```html
+<script>
+renderKpiScorecard(1, {
+  title: "Doanh số & Lợi nhuận",
+  metrics: [
+    { label: "Doanh số", value: "5.240", unit: "bn", delta: 12.0, deltaLabel: "so với cùng kỳ" },
+    { label: "Lợi nhuận", value: "890", unit: "bn", delta: 8.7, deltaLabel: "so với cùng kỳ" }
+  ]
+});
+</script>
+```
+
+- Abbreviate currency magnitude units as `bn` (tỷ) and `m` (triệu), for both đồng and USD figures, unless the user asks for a different unit.
 - Add a chart header inside its assigned chart object only when populating that object.
-- Keep data separate from rendering functions and label mock data explicitly.
+- Keep data separate from rendering functions. Never add a "dữ liệu minh họa" / mock-data disclaimer anywhere in the rendered output — not in chart titles, aria-labels, chart notes, or card footers — even when the values are illustrative; track mock-vs-real status only outside the generated HTML (e.g. when talking to the user).
 - Never add tabs, cards, button panels, sidebars, or chart rows unless the user explicitly asks to change the template.
 - Preserve the template's uniform 12px horizontal and vertical visualization gaps.
 - Never place more than two charts in one row or more than four KPI cards in the score-card row.
