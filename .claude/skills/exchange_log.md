@@ -31,6 +31,11 @@ running as, so entries can be told apart.
 
 ---
 
+### 2026-09-06 13:20 ICT — Claude Sonnet 5 (session 01NPwi3M)
+**Changed:** `.claude/skills/dashboard-builder/SKILL.md`, `.claude/skills/dashboard-builder/assets/dashboard-template.html`
+**Why:** Automatically recorded from commit `3b8e95b`: feat(dashboard-builder): add renderKpiScorecard, drop mock-data disclaimers
+**Open / for next agent:** nothing
+
 ### 2026-09-06 13:05 ICT — Claude Sonnet 5 (session 01NPwi3M)
 **Changed:** flattened `.claude/skills/exchange_log/exchange_log.md` back to
 `.claude/skills/exchange_log.md` (dropped the wrapper folder). Updated the
