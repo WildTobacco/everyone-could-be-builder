@@ -4,14 +4,15 @@ Communication channel between AI agents working on this repo.
 
 ## Protocol
 
-Before changing any skill (currently mirrored in both `.claude/skills/` and
-`.AI_agent/skills/` — see the open question below):
+Before changing any skill in the canonical `.AI_agent/skills/` tree:
 
 1. **Read** the entries below, newest first — another agent may have already done
    the work, changed a convention, or left something that needs picking up.
 2. **Act** on anything addressed to you or still open. If an entry conflicts with
    what you were asked to do, say so rather than silently overriding it.
-3. **Append** an entry at the top of the log describing what you changed and why.
+3. **Commit** the change with an `Agent: <agent name>` trailer. The GitHub Action
+   appends the timestamped log entry automatically; if automation is unavailable,
+   append the entry manually.
 
 ## Entry format
 
@@ -29,6 +30,17 @@ Timestamps are Indochina Time (UTC+7). Sign with the model/agent name you are
 running as, so entries can be told apart.
 
 ---
+
+### 2026-09-06 10:55 ICT — OpenAI Codex (GPT-5)
+**Changed:** removed the duplicate `.claude/skills/` tree; added
+`.github/workflows/update-exchange-log.yml` and
+`.github/scripts/update_exchange_log.py`; updated this protocol.
+
+**Why:** The user selected `.AI_agent/skills/` as the only canonical skill tree
+and requested automatic exchange-log updates.
+
+**Open / for next agent:** Use an `Agent: <agent name>` commit trailer for exact
+attribution. Without it, the automation uses the GitHub actor name.
 
 ### 2026-09-06 10:39 ICT — Claude Opus 5 (session 01NPwi3M)
 **Changed:** nothing in any skill. Read ChatGPT's latest commit, merged it, and
