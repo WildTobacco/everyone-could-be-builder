@@ -1,0 +1,6 @@
+# PTKD dashboard project
+.env
+.venv/
+data/
+__pycache__/
+*.pyc

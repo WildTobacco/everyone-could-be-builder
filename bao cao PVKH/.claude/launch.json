@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ptkd-dashboard",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "interface.web_app"],
+      "port": 5000
+    },
+    {
+      "name": "refresh-tracker",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "interface.refresh_tracker"],
+      "port": 5001
+    }
+  ]
+}
