@@ -52,18 +52,18 @@ judgment is, and a BLOCKER here invalidates everything downstream. Honor
 there are several independent tables; a single table is faster inline.
 Do not proceed while any table is BLOCKED.
 
-**3. Write `data_model.md` — one subagent.** Spill the registry to disk in
+**3. Write `data_model.md` — one `data-profiler` agent.** Spill the registry to disk in
 the column-table format above. Review the result yourself before anything
 downstream consumes it: a wrong grain here poisons every number in every
 chart, and it is cheap to catch now and expensive to catch after four tabs
 are built. Append the source→understanding step to `lineage.md`.
 
-**4. Calculations and metrics — one or two subagents.** Build the transforms
+**4. Calculations and metrics — one or two `metric-builder` agents.** Build the transforms
 and metric definitions from `data_model.md`. Where the work is SQL, the
 `mindful-sql-builder` skill applies. Each agent appends its
 input → transform → output to `lineage.md`.
 
-**5. Visualizations — parallel, one subagent per tab.** This is the only
+**5. Visualizations — parallel, one `chart-builder` agent per tab.** This is the only
 genuinely parallel stage, and it needs two rules to be safe:
 
 - **Spawn the whole batch in a single message.** Several Agent calls in one
@@ -85,26 +85,29 @@ diff while the work is still recent.
 
 ## Delegating
 
-A subagent cannot see this conversation, the URD, or any other agent. Every
-spawn prompt carries, explicitly:
+The three agent types live in `.claude/agents/` and carry their own standing
+brief, model, and tool access. Do not restate their instructions in the spawn
+prompt — pass only what varies per call:
 
-- What is being built and why — enough that the agent can make a judgment
-  call rather than follow a narrow instruction into a wrong result.
-- The absolute path to `data_model.md`, and an instruction to read it first.
-- The absolute path of its own output file, and that it writes nowhere else.
-- For chart work: read `.claude/skills/dashboard-builder/SKILL.md` and
-  follow the template's conventions. A terse prompt produces a generic
-  chart that ignores every BIDV convention in that skill.
-- A closing instruction to append its lineage line and to report the columns
-  and units it actually used.
+- **Absolute paths** to `data_model.md` and `lineage.md`.
+- **The absolute output path** this agent owns, and nothing else.
+- **What is being built and why** — enough context that the agent can make a
+  judgment call rather than follow a narrow instruction into a wrong result.
+  For `chart-builder`, this is the tab's chart spec.
 
-That last item is the cheap verification: a returned "columns referenced:
-`doanh_so`, `loi_nhuan`; unit assumed: tỷ" can be diffed against
-`data_model.md` in seconds. Discovering a unit mismatch by eye, four tabs
-later, cannot.
+A subagent cannot see this conversation, the URD, or any other agent, so
+anything absent from its definition and its prompt does not exist to it.
 
-Use Sonnet for the mechanical stages (3, 4, 5). Keep the main session on the
-stronger model — stages 1, 2, 6, and 7 are where a wrong call is expensive.
+Each definition already requires the agent to report the columns and units it
+actually used. Diff those against `data_model.md` when the reports come back
+— a returned "columns referenced: `doanh_so`, `loi_nhuan`; unit assumed: tỷ"
+is checked in seconds, where a unit mismatch found by eye four tabs later is
+not. Two agents naming the same field differently is the signature failure of
+the parallel stage; this is how it gets caught.
+
+Models are pinned in each definition's frontmatter, so there is nothing to
+choose per call. Keep the main session on the stronger model — stages 1, 2,
+6, and 7 are where a wrong call is expensive.
 
 ## Resuming in a later session
 
