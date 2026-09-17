@@ -20,3 +20,11 @@ skill.)
 When you commit a change under that tree, include an `Agent: <your name>`
 trailer in the commit message; a GitHub Action appends a timestamped log
 entry automatically from that trailer.
+
+## Subagents
+
+`.claude/agents/` holds subagent definitions (`data-profiler`,
+`metric-builder`, `chart-builder`) used by the `dashboard-pipeline` skill.
+It is not a skills tree and does not duplicate one — each file is a single
+agent's standing brief, with its model and tool access pinned in frontmatter.
+Leave it alongside `.claude/skills/` rather than merging the two.
